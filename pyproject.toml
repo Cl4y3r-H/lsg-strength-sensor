@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lsg-strength-sensor"
+version = "0.1.0"
+description = "Sensor de entrenamiento de fuerza (wger) para LifeSync-Games"
+requires-python = ">=3.11"
+dependencies = []   # solo biblioteca estándar
+
+[project.scripts]
+lsg-strength-sensor = "lsg_strength_sensor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

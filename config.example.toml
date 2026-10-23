@@ -1,0 +1,52 @@
+# Copiar como config.toml y completar.
+# Los secretos van en variables de entorno, NUNCA en este archivo:
+#   WGER_TOKEN    → clave API de wger (Ajustes de usuario → API key)
+#   LSG_PASSWORD  → contraseña de LifeSync-Games
+
+[sensor]
+timezone = "America/Santiago"      # define dónde empieza y termina el "día" del tope diario
+state_db = "sensor_state.sqlite3"
+poll_interval_minutes = 30
+start_date = "2026-10-13"          # ignora registros anteriores en la primera ejecución
+
+[rules]
+sets_per_block = 3                 # P = floor(S / 3) * 10   (GDD §2)
+points_per_block = 10
+daily_cap = 30
+muscle_cooldown_hours = 48         # PENDIENTE: la propuesta dice 24 h, el GDD 48 h
+count_secondary_muscles = false
+max_reps = 50
+max_weight_kg = 500
+max_progression_pct = 20           # aumento máximo de carga vs. mejor marca previa
+max_sets_per_day = 40
+max_training_days_per_week = 6
+
+[wger]
+base_url = "https://wger.de"       # o la instancia propia en Docker
+auth_scheme = "Token"
+token_env = "WGER_TOKEN"
+
+# Opcional: agrupa músculos de wger en grupos propios para el cooldown.
+# Generar la lista con:  python -m lsg_strength_sensor -c config.toml muscles
+# Sin mapa, cada músculo usa su nombre en inglés como grupo.
+[wger.muscle_map]
+# "4" = "chest"
+# "2" = "shoulders"
+
+[lsg]
+auth_url = "https://lsg.diinf.usach.cl/lsg-auth"
+core_url = "https://lsg.diinf.usach.cl/lsg-core-api"
+email = ""                         # tu correo LSG
+password_env = "LSG_PASSWORD"
+
+# IDs que entrega el alta del sensor (pedir al laboratorio). Verificar con: check-lsg
+sensor_endpoint_id = 0
+players_sensor_endpoint_id = 0
+send_webhook = false               # activar cuando existan los IDs anteriores
+
+attribute_id = 2                   # Físico → FISICO_BASE
+point_dimension_id = 2             # confirmar el ID vigente con el laboratorio
+
+# dry_run | offline_sync | adjust   — ver crediting.py
+credit_strategy = "dry_run"
+# game_id = 0                      # obligatorio solo para offline_sync
